@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playwright Locators Training Workbook</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-navy: #17324D;
+      --color-blue: #2F6F9F;
+      --color-teal: #2A8C82;
+      --color-neutral: #F4F6F8;
+      --color-code-bg: #F2F4F6;
+      --color-amber: #F0A43C;
+      --color-green: #2E8B57;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #1a202c;
+      background-color: #f8fafc;
+      line-height: 1.6;
+    }
+
+    code, pre {
+      font-family: 'Fira Code', monospace;
+    }
+
+    /* Print Optimizations */
+    @media print {
+      body { background-color: #ffffff; color: #000000; }
+      .no-print { display: none !important; }
+      .page-break { page-break-before: always; }
+      .avoid-break { page-break-inside: avoid; }
+      .shadow-custom, .shadow-lg, .shadow-md { box-shadow: none !important; }
+      .border { border-color: #cbd5e1 !important; }
+      @page { margin: 1.5cm; size: A4; }
+    }
+
+    /* Custom UI Components */
+    .bg-navy { background-color: var(--color-navy); }
+    .text-navy { color: var(--color-navy); }
+    .border-navy { border-color: var(--color-navy); }
+
+    .bg-blue-custom { background-color: var(--color-blue); }
+    .text-blue-custom { color: var(--color-blue); }
+    .border-blue-custom { border-color: var(--color-blue); }
+
+    .bg-teal-custom { background-color: var(--color-teal); }
+    .text-teal-custom { color: var(--color-teal); }
+    .border-teal-custom { border-color: var(--color-teal); }
+
+    .bg-neutral-custom { background-color: var(--color-neutral); }
+    .bg-code-custom { background-color: var(--color-code-bg); }
+
+    .bg-amber-custom { background-color: var(--color-amber); }
+    .text-amber-custom { color: var(--color-amber); }
+    .border-amber-custom { border-color: var(--color-amber); }
+
+    .bg-green-custom { background-color: var(--color-green); }
+    .text-green-custom { color: var(--color-green); }
+    .border-green-custom { border-color: var(--color-green); }
+
+    .card-border {
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+    }
+
+    /* Code block styling */
+    .code-block {
+      background-color: var(--color-code-bg);
+      border: 1px solid #cbd5e1;
+      border-left: 4px solid var(--color-blue);
+      border-radius: 0.375rem;
+      padding: 0.85rem 1.1rem;
+      font-size: 0.875rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* Callout Box Variations */
+    .callout-amber {
+      background-color: #fffbe3;
+      border-left: 5px solid var(--color-amber);
+      border-radius: 0.375rem;
+      padding: 1rem 1.25rem;
+    }
+
+    .callout-green {
+      background-color: #f0fdf4;
+      border-left: 5px solid var(--color-green);
+      border-radius: 0.375rem;
+      padding: 1rem 1.25rem;
+    }
+
+    .callout-teal {
+      background-color: #f0fdfa;
+      border-left: 5px solid var(--color-teal);
+      border-radius: 0.375rem;
+      padding: 1rem 1.25rem;
+    }
+
+    .callout-navy {
+      background-color: #f1f5f9;
+      border-left: 5px solid var(--color-navy);
+      border-radius: 0.375rem;
+      padding: 1rem 1.25rem;
+    }
+
+    /* Table Formatting */
+    .custom-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+
+    .custom-table th {
+      background-color: var(--color-navy);
+      color: #ffffff;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .custom-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 0.875rem;
+    }
+
+    .custom-table tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .custom-table tr:hover {
+      background-color: #f1f5f9;
+    }
+
+    /* Flow Diagram Nodes */
+    .diagram-node {
+      background-color: #ffffff;
+      border: 2px solid var(--color-navy);
+      border-radius: 0.5rem;
+      padding: 0.6rem 1rem;
+      font-weight: 600;
+      color: var(--color-navy);
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .diagram-arrow {
+      color: var(--color-teal);
+      font-weight: 800;
+      font-size: 1.25rem;
+      text-align: center;
+      margin: 0.25rem 0;
+    }
+  </style>
+</head>
+<body class="max-w-5xl mx-auto px-4 py-8 sm:px-8">
+
+  <!-- ==================== COVER PAGE ==================== -->
+  <header class="bg-navy text-white rounded-xl p-8 sm:p-12 mb-12 shadow-xl border-b-8 border-teal-custom text-center sm:text-left relative overflow-hidden">
+    <div class="absolute -right-12 -bottom-12 w-64 h-64 bg-blue-900 rounded-full opacity-30 pointer-events-none"></div>
+    <div class="relative z-10">
+      <div class="inline-block bg-teal-custom text-white text-xs font-bold uppercase tracking-widest px-3 py-1 rounded mb-4">
+        Internal QA Engineering Handbook
+      </div>
+      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight mb-2">PLAYWRIGHT LOCATORS</h1>
+      <p class="text-2xl sm:text-3xl font-light text-blue-200 mb-6">Training Workbook</p>
+      
+      <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-8">
+        <span class="bg-slate-800 text-teal-300 font-semibold text-sm px-3 py-1 rounded border border-teal-500/30">Beginner</span>
+        <span class="text-slate-400">→</span>
+        <span class="bg-slate-800 text-blue-300 font-semibold text-sm px-3 py-1 rounded border border-blue-500/30">Intermediate</span>
+        <span class="text-slate-400">→</span>
+        <span class="bg-slate-800 text-amber-300 font-semibold text-sm px-3 py-1 rounded border border-amber-500/30">Advanced</span>
+        <span class="ml-2 text-xs bg-slate-700 text-slate-200 px-2.5 py-1 rounded font-mono">JavaScript / TypeScript</span>
+      </div>
+
+      <p class="text-sm sm:text-base text-slate-300 italic mb-8 max-w-2xl">
+        Explanations • Examples • Exercises • Answers • Real-World Locator Engineering
+      </p>
+
+      <div class="pt-6 border-t border-slate-700 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-300 gap-2">
+        <div>
+          <span class="text-slate-400">Author & Lead Trainer:</span> <strong class="text-white font-semibold">Qaseem Ali</strong> (Senior QA Automation Engineer)
+        </div>
+        <div>
+          <span class="text-slate-400">Target Audience:</span> SDETs, QA Automation Engineers, & Automation Teams
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== INTRODUCTION & OBJECTIVES ==================== -->
+  <section class="mb-12 avoid-break">
+    <div class="bg-white rounded-xl p-6 sm:p-8 card-border shadow-sm mb-8">
+      <h2 class="text-2xl font-bold text-navy mb-4 border-b pb-2 flex items-center gap-2">
+        <span>📌</span> Purpose & How to Use This Workbook
+      </h2>
+      <p class="text-slate-700 mb-4">
+        This guide teaches Playwright locators from the ground up. It starts with basic HTML concepts and gradually moves to semantic Playwright locators, CSS selectors, advanced selector relationships, XPath, hierarchical locators, locator quality, debugging, and real-world automation patterns.
+      </p>
+      <div class="grid sm:grid-cols-2 gap-4 mb-6">
+        <div class="bg-neutral-custom p-4 rounded-lg border-l-4 border-blue-custom">
+          <h3 class="font-bold text-navy text-sm uppercase tracking-wider mb-1">How to Use This Guide</h3>
+          <p class="text-xs text-slate-600">
+            Read the explanation first, study the HTML, predict the locator yourself, then compare it with the Playwright code. Do not memorize selectors without understanding what each part means.
+          </p>
+        </div>
+        <div class="bg-neutral-custom p-4 rounded-lg border-l-4 border-teal-custom">
+          <h3 class="font-bold text-navy text-sm uppercase tracking-wider mb-1">Recommended Audience</h3>
+          <p class="text-xs text-slate-600">
+            Playwright beginners, Selenium-to-Playwright migration engineers, QA automation engineers, and senior SDETs training junior/intermediate engineers.
+          </p>
+        </div>
+      </div>
+
+      <h3 class="text-lg font-bold text-navy mb-4">What This Workbook Teaches</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="p-3 bg-slate-50 rounded border border-slate-200 text-xs font-medium text-slate-700 flex items-center gap-2">
+          <span class="text-teal-custom text-base">✓</span> Understand HTML before writing locators
+        </div>
+        <div class="p-3 bg-slate-50 rounded border border-slate-200 text-xs font-medium text-slate-700 flex items-center gap-2">
+          <span class="text-teal-custom text-base">✓</span> Master Playwright semantic locators
+        </div>
+        <div class="p-3 bg-slate-50 rounded border border-slate-200 text-xs font-medium text-slate-700 flex items-center gap-2">
+          <span class="text-teal-custom text-base">✓</span> Build CSS selectors from scratch
+        </div>
+        <div class="p-3 bg-slate-50 rounded border border-slate-200 text-xs font-medium text-slate-700 flex items-center gap-2">
+          <span class="text-teal-custom text-base">✓</span> Control scope and hierarchy
+        </div>
+        <div class="p-3 bg-slate-50 rounded border border-slate-200 text-xs font-medium text-slate-700 flex items-center gap-2">
+          <span class="text-teal-custom text-base">✓</span> Use filter(), :has(), and :has-text()
+        </div>
+        <div class="p-3 bg-slate-50 rounded border border-slate-200 text-xs font-medium text-slate-700 flex items-center gap-2">
+          <span class="text-teal-custom text-base">✓</span> Apply XPath strategically
+        </div>
+        <div class="p-3 bg-slate-50 rounded border border-slate-200 text-xs font-medium text-slate-700 flex items-center gap-2">
+          <span class="text-teal-custom text-base">✓</span> Design stable, non-brittle locators
+        </div>
+        <div class="p-3 bg-slate-50 rounded border border-slate-200 text-xs font-medium text-slate-700 flex items-center gap-2">
+          <span class="text-teal-custom text-base">✓</span> Debug locator strictness & timing
+        </div>
+        <div class="p-3 bg-slate-50 rounded border border-slate-200 text-xs font-medium text-slate-700 flex items-center gap-2">
+          <span class="text-teal-custom text-base">✓</span> Solve real-world enterprise scenarios
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== VISUAL LEARNING ROADMAP ==================== -->
+  <section class="mb-12 page-break">
+    <div class="bg-white rounded-xl p-6 sm:p-8 card-border shadow-sm">
+      <h2 class="text-2xl font-bold text-navy mb-6 border-b pb-2 flex items-center gap-2">
+        <span>🗺️</span> Visual Learning Roadmap
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Stage 1 -->
+        <div class="bg-neutral-custom p-4 rounded-lg border border-slate-200">
+          <div class="text-xs font-bold uppercase tracking-wider text-teal-custom mb-1">Stage 1</div>
+          <h3 class="font-bold text-navy text-base mb-2">HTML Foundations</h3>
+          <p class="text-xs text-slate-600 mb-2">HTML tags, attributes, values, DOM elements, and basic locator concept.</p>
+          <span class="inline-block bg-teal-100 text-teal-800 text-xs px-2 py-0.5 rounded font-semibold">Goal: Understand DOM targets</span>
+        </div>
+
+        <!-- Stage 2 -->
+        <div class="bg-neutral-custom p-4 rounded-lg border border-slate-200">
+          <div class="text-xs font-bold uppercase tracking-wider text-teal-custom mb-1">Stage 2</div>
+          <h3 class="font-bold text-navy text-base mb-2">Playwright Semantic Locators</h3>
+          <p class="text-xs text-slate-600 mb-2">getByRole, getByText, getByLabel, getByPlaceholder, getByTestId.</p>
+          <span class="inline-block bg-teal-100 text-teal-800 text-xs px-2 py-0.5 rounded font-semibold">Goal: Master user-facing intent</span>
+        </div>
+
+        <!-- Stage 3 -->
+        <div class="bg-neutral-custom p-4 rounded-lg border border-slate-200">
+          <div class="text-xs font-bold uppercase tracking-wider text-teal-custom mb-1">Stage 3</div>
+          <h3 class="font-bold text-navy text-base mb-2">CSS Selectors Basics</h3>
+          <p class="text-xs text-slate-600 mb-2">Tag, ID (#), Class (.), Attributes ([key=val]), and combinations.</p>
+          <span class="inline-block bg-teal-100 text-teal-800 text-xs px-2 py-0.5 rounded font-semibold">Goal: Build locator() from scratch</span>
+        </div>
+
+        <!-- Stage 4 -->
+        <div class="bg-neutral-custom p-4 rounded-lg border border-slate-200">
+          <div class="text-xs font-bold uppercase tracking-wider text-teal-custom mb-1">Stage 4</div>
+          <h3 class="font-bold text-navy text-base mb-2">CSS Relationships</h3>
+          <p class="text-xs text-slate-600 mb-2">Descendants, direct children (&gt;), siblings (+/~), string matching (^=, $=, *=).</p>
+          <span class="inline-block bg-teal-100 text-teal-800 text-xs px-2 py-0.5 rounded font-semibold">Goal: Precise scope control</span>
+        </div>
+
+        <!-- Stage 5 -->
+        <div class="bg-neutral-custom p-4 rounded-lg border border-slate-200">
+          <div class="text-xs font-bold uppercase tracking-wider text-teal-custom mb-1">Stage 5</div>
+          <h3 class="font-bold text-navy text-base mb-2">Hierarchy & Filtering</h3>
+          <p class="text-xs text-slate-600 mb-2">:has-text(), :has(), filter(), locator chaining, positional nth().</p>
+          <span class="inline-block bg-teal-100 text-teal-800 text-xs px-2 py-0.5 rounded font-semibold">Goal: Business-oriented scoping</span>
+        </div>
+
+        <!-- Stage 6 -->
+        <div class="bg-neutral-custom p-4 rounded-lg border border-slate-200">
+          <div class="text-xs font-bold uppercase tracking-wider text-teal-custom mb-1">Stage 6</div>
+          <h3 class="font-bold text-navy text-base mb-2">XPath Mastery</h3>
+          <p class="text-xs text-slate-600 mb-2">Attributes, text(), contains(), ancestor, preceding, following axes.</p>
+          <span class="inline-block bg-teal-100 text-teal-800 text-xs px-2 py-0.5 rounded font-semibold">Goal: Handle complex structures</span>
+        </div>
+
+        <!-- Stage 7 -->
+        <div class="bg-neutral-custom p-4 rounded-lg border border-slate-200">
+          <div class="text-xs font-bold uppercase tracking-wider text-teal-custom mb-1">Stage 7</div>
+          <h3 class="font-bold text-navy text-base mb-2">Locator Engineering</h3>
+          <p class="text-xs text-slate-600 mb-2">Stability, uniqueness, brittle anti-patterns, dynamic ID handling.</p>
+          <span class="inline-block bg-teal-100 text-teal-800 text-xs px-2 py-0.5 rounded font-semibold">Goal: Maintainable architecture</span>
+        </div>
+
+        <!-- Stage 8 -->
+        <div class="bg-neutral-custom p-4 rounded-lg border border-slate-200">
+          <div class="text-xs font-bold uppercase tracking-wider text-teal-custom mb-1">Stage 8</div>
+          <h3 class="font-bold text-navy text-base mb-2">Real-World Scenarios</h3>
+          <p class="text-xs text-slate-600 mb-2">Forms, tables, claims, modals, dynamic lists, multi-row grids.</p>
+          <span class="inline-block bg-teal-100 text-teal-800 text-xs px-2 py-0.5 rounded font-semibold">Goal: Enterprise application QA</span>
+        </div>
+
+        <!-- Stage 9 -->
+        <div class="bg-neutral-custom p-4 rounded-lg border border-slate-200">
+          <div class="text-xs font-bold uppercase tracking-wider text-teal-custom mb-1">Stage 9 & 10</div>
+          <h3 class="font-bold text-navy text-base mb-2">Exercises & Assessment</h3>
+          <p class="text-xs text-slate-600 mb-2">Beginner, Intermediate, Advanced challenges, answers, team standards.</p>
+          <span class="inline-block bg-teal-100 text-teal-800 text-xs px-2 py-0.5 rounded font-semibold">Goal: Independent proficiency</span>
+        </div>
+      </div>
+      
+      <div class="mt-6 callout-navy text-xs text-slate-700">
+        <strong>Core Philosophy:</strong> The most important skill is not remembering syntax. It is learning to look at HTML and decide what makes the target element uniquely identifiable.
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== VISUAL TECHNICAL DIAGRAMS ==================== -->
+  <section class="mb-12 avoid-break">
+    <div class="bg-white rounded-xl p-6 sm:p-8 card-border shadow-sm">
+      <h2 class="text-2xl font-bold text-navy mb-6 border-b pb-2 flex items-center gap-2">
+        <span>⚙️</span> Key Locator Engineering Frameworks
+      </h2>
+
+      <div class="space-y-8">
+        <!-- Diagram 1 -->
+        <div>
+          <h3 class="text-sm font-bold text-navy uppercase tracking-wider mb-3">Diagram 1 — Locator Engineering Flow</h3>
+          <div class="flex flex-wrap items-center justify-center gap-2 bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs font-medium">
+            <span class="bg-navy text-white px-2.5 py-1 rounded">HTML Element</span>
+            <span class="text-teal-custom font-bold">→</span>
+            <span class="bg-white border border-navy px-2.5 py-1 rounded">Identify Target</span>
+            <span class="text-teal-custom font-bold">→</span>
+            <span class="bg-white border border-navy px-2.5 py-1 rounded">Find Stable Property</span>
+            <span class="text-teal-custom font-bold">→</span>
+            <span class="bg-white border border-navy px-2.5 py-1 rounded">Check Uniqueness</span>
+            <span class="text-teal-custom font-bold">→</span>
+            <span class="bg-white border border-navy px-2.5 py-1 rounded">Identify Business Container</span>
+            <span class="text-teal-custom font-bold">→</span>
+            <span class="bg-white border border-navy px-2.5 py-1 rounded">Scope / Filter</span>
+            <span class="text-teal-custom font-bold">→</span>
+            <span class="bg-white border border-navy px-2.5 py-1 rounded">Choose Locator</span>
+            <span class="text-teal-custom font-bold">→</span>
+            <span class="bg-white border border-navy px-2.5 py-1 rounded">Validate count()</span>
+            <span class="text-teal-custom font-bold">→</span>
+            <span class="bg-green-custom text-white px-2.5 py-1 rounded">Perform Action</span>
+          </div>
+        </div>
+
+        <!-- Diagram 2 -->
+        <div>
+          <h3 class="text-sm font-bold text-navy uppercase tracking-wider mb-3">Diagram 2 — Hierarchical Locator Strategy</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-6 gap-2 text-center text-xs">
+            <div class="p-2 bg-slate-100 border-l-4 border-navy rounded font-semibold text-navy">BUSINESS ENTITY</div>
+            <div class="p-2 bg-slate-100 border-l-4 border-blue-custom rounded font-semibold text-blue-custom">STABLE CONTAINER</div>
+            <div class="p-2 bg-slate-100 border-l-4 border-teal-custom rounded font-semibold text-teal-custom">TARGET ACTION</div>
+            <div class="p-2 bg-slate-100 border-l-4 border-slate-600 rounded font-semibold text-slate-700">UNIQUE LOCATOR</div>
+            <div class="p-2 bg-slate-100 border-l-4 border-amber-custom rounded font-semibold text-amber-custom">COUNT / ASSERTION</div>
+            <div class="p-2 bg-green-100 border-l-4 border-green-custom rounded font-semibold text-green-custom">ACTION</div>
+          </div>
+        </div>
+
+        <!-- Diagram 3 -->
+        <div>
+          <h3 class="text-sm font-bold text-navy uppercase tracking-wider mb-3">Diagram 3 — Locator Selection Decision Tree</h3>
+          <div class="bg-neutral-custom p-4 rounded-lg border border-slate-200 text-xs space-y-2">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-navy w-48">Can I identify it semantically?</span>
+              <span class="text-green-custom font-bold">YES →</span>
+              <code class="bg-white px-2 py-0.5 rounded border text-navy">getByRole / getByLabel / getByText</code>
+            </div>
+            <div class="flex items-center gap-2 pl-4 border-l-2 border-slate-300">
+              <span class="font-bold text-navy w-44">NO ↓ Is there a stable test ID?</span>
+              <span class="text-green-custom font-bold">YES →</span>
+              <code class="bg-white px-2 py-0.5 rounded border text-navy">getByTestId</code>
+            </div>
+            <div class="flex items-center gap-2 pl-8 border-l-2 border-slate-300">
+              <span class="font-bold text-navy w-40">NO ↓ Is there a stable attribute?</span>
+              <span class="text-green-custom font-bold">YES →</span>
+              <code class="bg-white px-2 py-0.5 rounded border text-navy">CSS locator ([attr=val])</code>
+            </div>
+            <div class="flex items-center gap-2 pl-12 border-l-2 border-slate-300">
+              <span class="font-bold text-navy w-36">NO ↓ Can hierarchy identify it?</span>
+              <span class="text-green-custom font-bold">YES →</span>
+              <code class="bg-white px-2 py-0.5 rounded border text-navy">filter / :has / chaining</code>
+            </div>
+            <div class="flex items-center gap-2 pl-16 border-l-2 border-slate-300">
+              <span class="font-bold text-navy w-32">NO ↓ Complex relationship?</span>
+              <span class="text-green-custom font-bold">YES →</span>
+              <code class="bg-white px-2 py-0.5 rounded border text-navy">XPath (axes / text matching)</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PART 1 ==================== -->
+  <section class="mb-12 page-break">
+    <div class="bg-navy text-white p-4 rounded-t-xl">
+      <h2 class="text-xl font-bold tracking-wide">PART 1: HTML and Locator Foundations</h2>
+    </div>
+    <div class="bg-white p-6 sm:p-8 rounded-b-xl card-border space-y-8">
+
+      <!-- Topic 1 -->
+      <div>
+        <h3 class="text-lg font-bold text-navy mb-1">1. What is an HTML element?</h3>
+        <p class="text-sm text-slate-700 mb-3">
+          A web page is built from HTML elements. Examples include input fields, buttons, links, labels, tables, rows, divs, spans, and images.
+        </p>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <div class="text-xs font-bold text-slate-500 uppercase mb-1">HTML Example</div>
+            <div class="code-block">&lt;button&gt;Submit&lt;/button&gt;
+&lt;input type="text" name="username"&gt;
+&lt;a href="/claims"&gt;Claims&lt;/a&gt;</div>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-slate-500 uppercase mb-1">Playwright Explanation</div>
+            <p class="text-xs text-slate-600 bg-slate-50 p-3 rounded border border-slate-200">
+              In automation, Playwright interacts with these elements. A locator is the instruction that tells Playwright which element you want to target in the DOM.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topic 2 -->
+      <div>
+        <h3 class="text-lg font-bold text-navy mb-1">2. Tag, attribute, and attribute value</h3>
+        <p class="text-sm text-slate-700 mb-3">Understanding the structure of an HTML tag is mandatory before writing selectors.</p>
+        <div class="code-block mb-3">&lt;input type="text" name="username" id="user-field" class="form-control"&gt;</div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div class="p-3 bg-neutral-custom rounded border">
+            <strong class="text-navy block">Tag:</strong> <code class="text-blue-custom">input</code> — Tells you what kind of HTML element it is.
+          </div>
+          <div class="p-3 bg-neutral-custom rounded border">
+            <strong class="text-navy block">Attributes:</strong> <code class="text-blue-custom">type, name, id, class</code> — Extra information attached to the element.
+          </div>
+          <div class="p-3 bg-neutral-custom rounded border">
+            <strong class="text-navy block">Attribute Values:</strong> <code class="text-blue-custom">text, username, user-field, form-control</code> — The actual values.
+          </div>
+        </div>
+        <div class="mt-3 callout-teal text-xs">
+          <strong>Key Takeaway:</strong> When inspecting HTML, start by identifying the tag, then look for attributes that are stable and unique.
+        </div>
+      </div>
+
+      <!-- Topic 3 -->
+      <div>
+        <h3 class="text-lg font-bold text-navy mb-1">3. What does a locator do?</h3>
+        <p class="text-sm text-slate-700 mb-3">A locator defines how Playwright finds elements on the page.</p>
+        <div class="code-block mb-3">const username = page.locator('input[name="username"]');
+await username.fill("admin");</div>
+        <p class="text-xs text-slate-600 mb-2">
+          The first line does not fill anything or search the DOM immediately. It creates a locator representing elements matching the selector. The second line triggers auto-waiting and performs the action.
+        </p>
+        <div class="bg-blue-50 border-l-4 border-blue-custom p-3 rounded text-xs text-navy font-semibold">
+          Mental Model: Selector → Element Resolution → Action / Assertion
+        </div>
+      </div>
+
+      <!-- Topic 4 -->
+      <div>
+        <h3 class="text-lg font-bold text-navy mb-1">4. Locator vs element</h3>
+        <p class="text-sm text-slate-700 mb-3">
+          A locator is not a static reference to an already-fetched DOM node. Playwright locators re-evaluate dynamically whenever an action or assertion is performed.
+        </p>
+        <div class="code-block mb-2">const submit = page.getByRole("button", { name: "Submit" });
+await submit.click();</div>
+        <p class="text-xs text-slate-600">
+          This strict separation enables Playwright to handle dynamic UI re-renders, auto-waiting, and retries seamlessly.
+        </p>
+      </div>
+
+      <!-- Topic 5 -->
+      <div>
+        <h3 class="text-lg font-bold text-navy mb-1">5. Uniqueness & strictness</h3>
+        <p class="text-sm text-slate-700 mb-3">
+          A strong locator normally identifies the intended element uniquely. If your selector matches multiple elements, Playwright will throw a strictness violation when executing single-element actions like <code class="text-blue-custom">click()</code> or <code class="text-blue-custom">fill()</code>.
+        </p>
+        <div class="code-block mb-3">const buttons = page.locator("button");
+console.log(await buttons.count());</div>
+        <div class="callout-amber text-xs">
+          <strong>Count Debugging Rule:</strong> Count is a valuable debugging technique. <code class="font-bold">0</code> means the selector found nothing; <code class="font-bold">1</code> is normally ideal; <code class="font-bold">&gt;1</code> means you should narrow the locator or explicitly work with a collection.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== PART 2 ==================== -->
+  <section class="mb-12 page-break">
+    <div class="bg-navy text-white p-4 rounded-t-xl">
+      <h2 class="text-xl font-bold tracking-wide">PART 2: Playwright's Predefined Locators</h2>
+    </div>
+    <div class="bg-white p-6 sm:p-8 rounded-b-xl card-border space-y-8">
+      <p class="text-sm text-slate-700">
+        Before learning CSS and XPath, learn Playwright's built-in semantic locators. These produce resilient, readable tests because they describe the interface in a way that mimics how human users interact with the UI.
+      </p>
+
+      <!-- Topic 6 -->
+      <div class="border-t pt-6">
+        <div class="flex justify-between items-start mb-2">
+          <h3 class="text-lg font-bold text-navy">6. getByRole()</h3>
+          <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded font-bold">Top Recommendation</span>
+        </div>
+        <p class="text-sm text-slate-700 mb-3">
+          Role-based locating asks: <em>What kind of interactive or semantic element is this?</em> Examples include <code class="text-blue-custom">button, link, heading, textbox, checkbox, radio, combobox, listbox, option, row, cell</code>.
+        </p>
+        <div class="code-block mb-3">await page.getByRole("button", { name: "Submit" }).click();
+await page.getByRole("textbox", { name: "Username" }).fill("admin");</div>
+        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs space-y-2 mb-3">
+          <h4 class="font-bold text-navy uppercase tracking-wider">What is the Accessible Name?</h4>
+          <p class="text-slate-600">
+            The accessible name is the name assistive technologies use to identify an element. It can come from visible text, an associated <code class="text-blue-custom">&lt;label&gt;</code>, <code class="text-blue-custom">aria-label</code>, or <code class="text-blue-custom">aria-labelledby</code>.
+          </p>
+          <div class="code-block">&lt;button aria-label="Close dialog"&gt;X&lt;/button&gt;</div>
+          <div class="code-block">await page.getByRole("button", { name: "Close dialog" }).click();</div>
+        </div>
+        <div class="callout-teal text-xs">
+          <strong>Good Practice:</strong> Prefer <code class="font-bold">getByRole()</code> when the role and accessible name clearly represent the user's action.
+        </div>
+      </div>
+
+      <!-- Topic 7 -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-2">7. getByText()</h3>
+        <p class="text-sm text-slate-700 mb-3">Use <code class="text-blue-custom">getByText()</code> when visible text is the primary identifying feature.</p>
+        <div class="code-block mb-3">await page.getByText("Transaction Created").click();</div>
+        <p class="text-xs text-slate-600 mb-2">If the same phrase occurs in multiple places, scope the locator using a container:</p>
+        <div class="code-block">await page.locator(".notification-panel").getByText("Transaction Created").click();</div>
+      </div>
+
+      <!-- Topic 8 -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-2">8. getByLabel()</h3>
+        <p class="text-sm text-slate-700 mb-3">Connects a form control with its explicitly associated <code class="text-blue-custom">&lt;label&gt;</code> element.</p>
+        <div class="code-block mb-2">&lt;label for="username"&gt;Username&lt;/label&gt;
+&lt;input id="username"&gt;</div>
+        <div class="code-block">await page.getByLabel("Username").fill("admin");</div>
+      </div>
+
+      <!-- Topic 9 -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-2">9. getByPlaceholder()</h3>
+        <p class="text-sm text-slate-700 mb-3">Targets input fields using their placeholder text attribute.</p>
+        <div class="code-block mb-2">&lt;input placeholder="Enter username"&gt;</div>
+        <div class="code-block mb-2">await page.getByPlaceholder("Enter username").fill("admin");</div>
+        <div class="callout-amber text-xs">
+          <strong>Caution:</strong> Useful when placeholder is stable. Do not use if placeholders are generated or localized dynamically.
+        </div>
+      </div>
+
+      <!-- Topic 10 -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-2">10. getByAltText()</h3>
+        <p class="text-sm text-slate-700 mb-3">Targets elements (commonly images) using their alternative text attribute.</p>
+        <div class="code-block mb-2">&lt;img alt="Company logo" src="/logo.png"&gt;</div>
+        <div class="code-block">await page.getByAltText("Company logo").click();</div>
+      </div>
+
+      <!-- Topic 11 -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-2">11. getByTitle()</h3>
+        <p class="text-sm text-slate-700 mb-3">Targets elements using their HTML <code class="text-blue-custom">title</code> attribute.</p>
+        <div class="code-block mb-2">&lt;button title="Close"&gt;X&lt;/button&gt;</div>
+        <div class="code-block">await page.getByTitle("Close").click();</div>
+      </div>
+
+      <!-- Topic 12 -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-2">12. getByTestId()</h3>
+        <p class="text-sm text-slate-700 mb-3">
+          Targets elements using dedicated testing attributes (by default <code class="text-blue-custom">data-testid</code>).
+        </p>
+        <div class="code-block mb-2">&lt;button data-testid="submit-transaction"&gt;Submit&lt;/button&gt;</div>
+        <div class="code-block mb-3">await page.getByTestId("submit-transaction").click();</div>
+        <div class="callout-teal text-xs">
+          <strong>Engineering Rule:</strong> A test ID is an explicit contract between engineering and automation. Avoid random test IDs added solely to bypass good locator strategy.
+        </div>
+      </div>
+
+      <!-- Topic 13 Table -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-4">13. Decision Guide for Predefined Locators</h3>
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>If you know...</th>
+              <th>Start with...</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>User's action / element role</strong></td>
+              <td><code class="text-blue-custom">getByRole()</code></td>
+              <td>Expresses semantic intent and accessibility role</td>
+            </tr>
+            <tr>
+              <td><strong>Visible text on screen</strong></td>
+              <td><code class="text-blue-custom">getByText()</code></td>
+              <td>Simple, readable, and user-facing</td>
+            </tr>
+            <tr>
+              <td><strong>Form field label</strong></td>
+              <td><code class="text-blue-custom">getByLabel()</code></td>
+              <td>Maps directly to field purpose</td>
+            </tr>
+            <tr>
+              <td><strong>Stable placeholder text</strong></td>
+              <td><code class="text-blue-custom">getByPlaceholder()</code></td>
+              <td>Useful for unlabeled form inputs</td>
+            </tr>
+            <tr>
+              <td><strong>Image alternative text</strong></td>
+              <td><code class="text-blue-custom">getByAltText()</code></td>
+              <td>Accessibility-oriented image selection</td>
+            </tr>
+            <tr>
+              <td><strong>Stable title attribute</strong></td>
+              <td><code class="text-blue-custom">getByTitle()</code></td>
+              <td>Uses HTML title metadata</td>
+            </tr>
+            <tr>
+              <td><strong>Explicit test contract</strong></td>
+              <td><code class="text-blue-custom">getByTestId()</code></td>
+              <td>Resilient against UI changes</td>
+            </tr>
+            <tr>
+              <td><strong>DOM structure / attributes</strong></td>
+              <td><code class="text-blue-custom">locator()</code></td>
+              <td>Maximum control over CSS/XPath selectors</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== PART 3 ==================== -->
+  <section class="mb-12 page-break">
+    <div class="bg-navy text-white p-4 rounded-t-xl">
+      <h2 class="text-xl font-bold tracking-wide">PART 3: CSS Selectors from Zero</h2>
+    </div>
+    <div class="bg-white p-6 sm:p-8 rounded-b-xl card-border space-y-8">
+      <p class="text-sm text-slate-700">
+        CSS selectors select elements for styling, but Playwright uses them to identify DOM targets. Understanding CSS syntax allows you to build custom <code class="text-blue-custom">page.locator()</code> expressions effortlessly.
+      </p>
+
+      <!-- Topic 14-15 -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-2">14 & 15. Tag Selector</h3>
+        <p class="text-sm text-slate-700 mb-3">Selects elements by their HTML tag name directly.</p>
+        <div class="code-block mb-3">page.locator("input");
+page.locator("button");
+page.locator("select");</div>
+        <div class="callout-amber text-xs">
+          <strong>Common Mistake:</strong> A tag by itself is usually too broad because pages typically contain multiple inputs or buttons.
+        </div>
+      </div>
+
+      <!-- Topic 16 -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-2">16. ID Selector (#)</h3>
+        <p class="text-sm text-slate-700 mb-3">In CSS, <code class="text-blue-custom">#</code> denotes an element ID.</p>
+        <div class="code-block mb-2">&lt;input id="username"&gt;</div>
+        <div class="code-block mb-3">page.locator("#username");</div>
+        <div class="callout-amber text-xs">
+          <strong>Warning — Dynamic IDs:</strong> Beware of generated IDs like <code class="font-bold">user-837462</code> that change on every page load or build.
+        </div>
+      </div>
+
+      <!-- Topic 17 -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-2">17. Class Selector (.)</h3>
+        <p class="text-sm text-slate-700 mb-3">In CSS, <code class="text-blue-custom">.</code> denotes a class name.</p>
+        <div class="code-block mb-2">&lt;button class="submit-button"&gt;Submit&lt;/button&gt;</div>
+        <div class="code-block mb-4">page.locator(".submit-button");</div>
+
+        <h4 class="font-bold text-navy text-sm mb-2">Single vs Chained vs Space-Separated Classes:</h4>
+        <div class="space-y-3 text-xs">
+          <div class="p-3 bg-neutral-custom rounded border">
+            <code class="text-blue-custom font-bold">.btn.primary</code> (No Space) → Same element must have <strong>both</strong> <code class="font-bold">btn</code> and <code class="font-bold">primary</code> classes.
+          </div>
+          <div class="p-3 bg-neutral-custom rounded border">
+            <code class="text-blue-custom font-bold">.btn .primary</code> (With Space) → Selects an element with class <code class="font-bold">primary</code> that is a <strong>descendant</strong> inside an element with class <code class="font-bold">btn</code>.
+          </div>
+        </div>
+      </div>
+
+      <!-- Topic 18-21 -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-2">18–21. Attribute Selectors</h3>
+        <p class="text-sm text-slate-700 mb-3">Square brackets <code class="text-blue-custom">[...]</code> select elements based on attributes and attribute values.</p>
+        
+        <div class="space-y-4">
+          <div>
+            <div class="text-xs font-bold text-slate-500 uppercase mb-1">18. Exact Attribute Match</div>
+            <div class="code-block">page.locator('[name="username"]');
+page.locator('[type="email"]');</div>
+          </div>
+
+          <div>
+            <div class="text-xs font-bold text-slate-500 uppercase mb-1">19. Attribute Presence (Exists)</div>
+            <div class="code-block">page.locator("[data-testid]"); // Matches any element where data-testid exists</div>
+          </div>
+
+          <div>
+            <div class="text-xs font-bold text-slate-500 uppercase mb-1">20. Combined Tag + Attribute</div>
+            <div class="code-block">page.locator('input[name="username"]'); // Input tag with name="username"
+page.locator('button[type="submit"]');</div>
+          </div>
+
+          <div>
+            <div class="text-xs font-bold text-slate-500 uppercase mb-1">21. Multiple Attributes</div>
+            <div class="code-block">page.locator('input[type="text"][name="username"]'); // Must satisfy both attribute rules</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== PART 4 ==================== -->
+  <section class="mb-12 page-break">
+    <div class="bg-navy text-white p-4 rounded-t-xl">
+      <h2 class="text-xl font-bold tracking-wide">PART 4: CSS Relationships & Operators</h2>
+    </div>
+    <div class="bg-white p-6 sm:p-8 rounded-b-xl card-border space-y-8">
+
+      <!-- Topic 22-23 -->
+      <div>
+        <h3 class="text-lg font-bold text-navy mb-2">22 & 23. Descendant vs Direct Child</h3>
+        <div class="code-block mb-3">&lt;div class="login-form"&gt;
+  &lt;div class="form-group"&gt;
+    &lt;input name="username"&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</div>
+        
+        <table class="custom-table mb-4">
+          <thead>
+            <tr>
+              <th>Syntax</th>
+              <th>Type</th>
+              <th>Meaning</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code class="text-blue-custom">.login-form input</code></td>
+              <td>Descendant (Space)</td>
+              <td>Finds <code class="font-bold">input</code> anywhere inside <code class="font-bold">.login-form</code>, regardless of nesting depth.</td>
+            </tr>
+            <tr>
+              <td><code class="text-blue-custom">.login-form &gt; input</code></td>
+              <td>Direct Child (<code class="font-bold">&gt;</code>)</td>
+              <td>Finds <code class="font-bold">input</code> only if it is an immediate child of <code class="font-bold">.login-form</code>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Topic 24 -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-2">24. Sibling Concepts</h3>
+        <p class="text-sm text-slate-700 mb-3">CSS supports sibling relationships to find adjacent or following elements.</p>
+        <div class="code-block mb-2">&lt;label&gt;Username&lt;/label&gt;
+&lt;input name="username"&gt;</div>
+        <div class="code-block">page.locator("label + input"); // Adjacent sibling: input immediately after label</div>
+      </div>
+
+      <!-- Topic 25-28 -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-3">25–28. Attribute Value Substring Operators</h3>
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Operator</th>
+              <th>Meaning</th>
+              <th>Example Selector</th>
+              <th>Matches Attribute Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code class="text-blue-custom">^=</code></td>
+              <td>Starts with</td>
+              <td><code class="text-blue-custom">[id^="submit-"]</code></td>
+              <td><code class="font-bold">submit-12345</code></td>
+            </tr>
+            <tr>
+              <td><code class="text-blue-custom">$=</code></td>
+              <td>Ends with</td>
+              <td><code class="text-blue-custom">[id$="-submit"]</code></td>
+              <td><code class="font-bold">btn-submit</code></td>
+            </tr>
+            <tr>
+              <td><code class="text-blue-custom font-bold">*=</code></td>
+              <td>Contains substring</td>
+              <td><code class="text-blue-custom">[id*="submit"]</code></td>
+              <td><code class="font-bold">main-submit-btn</code></td>
+            </tr>
+            <tr>
+              <td><code class="text-blue-custom font-bold">~=</code></td>
+              <td>Matches space-separated word</td>
+              <td><code class="text-blue-custom">[class~="active"]</code></td>
+              <td><code class="font-bold">card active selected</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== PART 5 ==================== -->
+  <section class="mb-12 page-break">
+    <div class="bg-navy text-white p-4 rounded-t-xl">
+      <h2 class="text-xl font-bold tracking-wide">PART 5: Advanced Playwright Locator Techniques</h2>
+    </div>
+    <div class="bg-white p-6 sm:p-8 rounded-b-xl card-border space-y-8">
+
+      <!-- Topic 29 -->
+      <div>
+        <h3 class="text-lg font-bold text-navy mb-2">29. :has-text()</h3>
+        <p class="text-sm text-slate-700 mb-3">
+          Narrows a selector down by selecting an element that contains specific visible text inside itself or its descendants.
+        </p>
+        <div class="code-block mb-2">&lt;button class="action"&gt;Submit&lt;/button&gt;</div>
+        <div class="code-block mb-3">page.locator('button:has-text("Submit")').click();
+page.locator('.form-actions button:has-text("Submit")').click();</div>
+      </div>
+
+      <!-- Topic 30-31 -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-2">30 & 31. :has() & Power of Hierarchy</h3>
+        <p class="text-sm text-slate-700 mb-3">
+          <code class="text-blue-custom">:has()</code> selects an element that contains another inner element matching a specific selector.
+        </p>
+        <div class="code-block mb-3">&lt;div class="user-card"&gt;
+  &lt;span&gt;David&lt;/span&gt;
+  &lt;button&gt;Edit&lt;/button&gt;
+&lt;/div&gt;</div>
+        <div class="code-block mb-3">page.locator('.user-card:has-text("David")').getByRole("button", { name: "Edit" }).click();</div>
+        <div class="callout-teal text-xs">
+          <strong>Container Philosophy:</strong> Identify the stable business container first (e.g., David's user card), then perform the action inside that container.
+        </div>
+      </div>
+
+      <!-- Topic 32 -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-2">32. Locator Chaining</h3>
+        <p class="text-sm text-slate-700 mb-3">Chain locators together to break complex DOM queries into clear steps.</p>
+        <div class="code-block">const row = page.locator('.transaction-row:has-text("Premium Adjustment")');
+await row.getByRole("button", { name: "Edit" }).click();</div>
+      </div>
+
+      <!-- Topic 33 -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-2">33. filter()</h3>
+        <p class="text-sm text-slate-700 mb-3">
+          Filters an existing collection of locators based on text or child element conditions.
+        </p>
+        <div class="code-block">const rows = page.locator(".transaction-row");
+await rows.filter({ hasText: "Premium Adjustment" })
+  .getByRole("button", { name: "Edit" })
+  .click();</div>
+      </div>
+
+      <!-- Topic 34 -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-2">34. Positional Selection: first(), last(), nth()</h3>
+        <div class="code-block mb-3">page.locator("button").first();
+page.locator("button").last();
+page.locator("button").nth(2); // 0-indexed (selects the 3rd button)</div>
+        <div class="callout-amber text-xs">
+          <strong>Engineering Warning:</strong> Use positional selection only when position is part of the business requirement. If you use <code class="font-bold">nth()</code> because you couldn't construct a proper locator, refactor to business container scoping.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== PART 6 ==================== -->
+  <section class="mb-12 page-break">
+    <div class="bg-navy text-white p-4 rounded-t-xl">
+      <h2 class="text-xl font-bold tracking-wide">PART 6: XPath from Beginner to Advanced</h2>
+    </div>
+    <div class="bg-white p-6 sm:p-8 rounded-b-xl card-border space-y-8">
+      <p class="text-sm text-slate-700">
+        XPath navigates XML/HTML nodes. While Playwright semantic locators and CSS are preferred, XPath is valuable for complex DOM axes and reverse parent/sibling traversals.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+        <div class="p-4 bg-neutral-custom rounded border">
+          <h4 class="font-bold text-navy uppercase mb-1">35. Relative Root (//)</h4>
+          <div class="code-block mb-1">page.locator('//input[@name="username"]');</div>
+          <p class="text-slate-600"><code class="font-bold">//</code> searches anywhere in the document.</p>
+        </div>
+
+        <div class="p-4 bg-neutral-custom rounded border">
+          <h4 class="font-bold text-navy uppercase mb-1">36. Attribute (@)</h4>
+          <div class="code-block mb-1">//input[@id="username"]
+//button[@type="submit"]</div>
+          <p class="text-slate-600"><code class="font-bold">@</code> denotes attribute names.</p>
+        </div>
+
+        <div class="p-4 bg-neutral-custom rounded border">
+          <h4 class="font-bold text-navy uppercase mb-1">37. Text Matching</h4>
+          <div class="code-block mb-1">//button[text()="Submit"]
+//button[contains(text(), "Submit")]</div>
+          <p class="text-slate-600"><code class="font-bold">text()</code> matches exact text; <code class="font-bold">contains()</code> handles partial text.</p>
+        </div>
+
+        <div class="p-4 bg-neutral-custom rounded border">
+          <h4 class="font-bold text-navy uppercase mb-1">38–40. Parent & Ancestor</h4>
+          <div class="code-block mb-1">//input[@id="username"]/..
+//input[@id="username"]/ancestor::form[1]</div>
+          <p class="text-slate-600"><code class="font-bold">/..</code> moves to parent; <code class="font-bold">ancestor::</code> finds matching higher containers.</p>
+        </div>
+
+        <div class="p-4 bg-neutral-custom rounded border sm:col-span-2">
+          <h4 class="font-bold text-navy uppercase mb-1">41–42. Following & Preceding Axes</h4>
+          <div class="code-block mb-1">//span[text()="David"]/following::button[1]
+//button[@id="edit"]/preceding::span[1]</div>
+          <p class="text-slate-600">Finds elements appearing after or before the reference node in document order.</p>
+        </div>
+      </div>
+
+      <div class="callout-navy text-xs">
+        <strong>XPath Strategy Rule:</strong> Do not use dynamic DevTools-generated XPaths. Write short, intentional XPaths only when CSS/Playwright methods cannot express the relationship.
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PART 7 ==================== -->
+  <section class="mb-12 page-break">
+    <div class="bg-navy text-white p-4 rounded-t-xl">
+      <h2 class="text-xl font-bold tracking-wide">PART 7: CSS vs XPath vs Playwright Locators</h2>
+    </div>
+    <div class="bg-white p-6 sm:p-8 rounded-b-xl card-border">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Situation</th>
+            <th>Recommended Starting Point</th>
+            <th>Reason</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Button with clear role / name</td>
+            <td><code class="text-blue-custom">getByRole()</code></td>
+            <td>Semantic, resilient, user-facing</td>
+          </tr>
+          <tr>
+            <td>Field with accessible label</td>
+            <td><code class="text-blue-custom">getByLabel()</code></td>
+            <td>Expresses field business intent directly</td>
+          </tr>
+          <tr>
+            <td>Stable automation contract</td>
+            <td><code class="text-blue-custom">getByTestId()</code></td>
+            <td>Explicit, isolated test hook</td>
+          </tr>
+          <tr>
+            <td>Unique stable element ID</td>
+            <td><code class="text-blue-custom">locator("#id")</code></td>
+            <td>Simple, highly performant CSS</td>
+          </tr>
+          <tr>
+            <td>Stable element attribute</td>
+            <td><code class="text-blue-custom">locator('[name="..."]')</code></td>
+            <td>Precise attribute match</td>
+          </tr>
+          <tr>
+            <td>Business container + action</td>
+            <td><code class="text-blue-custom">filter() / :has() / chaining</code></td>
+            <td>Strong hierarchical scoping</td>
+          </tr>
+          <tr>
+            <td>Repeated elements with intentional order</td>
+            <td><code class="text-blue-custom">nth()</code></td>
+            <td>Position is an explicit requirement</td>
+          </tr>
+          <tr>
+            <td>Complex DOM axis relationship</td>
+            <td><code class="text-blue-custom">XPath</code></td>
+            <td>Required for reverse DOM traversal</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ==================== PART 8 ==================== -->
+  <section class="mb-12 page-break">
+    <div class="bg-navy text-white p-4 rounded-t-xl">
+      <h2 class="text-xl font-bold tracking-wide">PART 8: Locator Engineering & Stability</h2>
+    </div>
+    <div class="bg-white p-6 sm:p-8 rounded-b-xl card-border space-y-8">
+
+      <h3 class="text-lg font-bold text-navy mb-2">Good vs Bad Locator Comparison</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Bad -->
+        <div class="callout-amber">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="bg-red-500 text-white font-bold text-xs px-2 py-0.5 rounded">❌ Brittle Anti-Pattern</span>
+          </div>
+          <div class="code-block mb-2">page.locator("button").nth(7);
+page.locator("div:nth-child(4) > div:nth-child(2) > button");</div>
+          <p class="text-xs text-slate-700">
+            <strong>Why it fails:</strong> Relies on exact DOM structure and index position. Inserting an element or changing layout breaks the test immediately.
+          </p>
+        </div>
+
+        <!-- Good -->
+        <div class="callout-green">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="bg-green-custom text-white font-bold text-xs px-2 py-0.5 rounded">✅ Robust Engineering</span>
+          </div>
+          <div class="code-block mb-2">page.locator(".transaction-row")
+  .filter({ hasText: "Premium Adjustment" })
+  .getByRole("button", { name: "Edit" });</div>
+          <p class="text-xs text-slate-700">
+            <strong>Why it succeeds:</strong> Identifies the business record first, then finds the action within that container. Unaffected by unrelated UI movements.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-4 border-t">
+        <div class="p-4 bg-neutral-custom rounded border">
+          <h4 class="font-bold text-navy uppercase mb-1">47. Dynamic IDs</h4>
+          <p class="text-slate-600">
+            Evaluate whether an ID is persistent. If <code class="font-bold">id="submit-12345"</code> changes per run, use prefix matching: <code class="text-blue-custom">[id^="submit-"]</code>.
+          </p>
+        </div>
+        <div class="p-4 bg-neutral-custom rounded border">
+          <h4 class="font-bold text-navy uppercase mb-1">48. Generated Classes</h4>
+          <p class="text-slate-600">
+            Avoid build-generated utility classes like <code class="font-bold">css-1a2b3c</code>. Rely on structural domain classes like <code class="font-bold">transaction-row</code>.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== PART 9 ==================== -->
+  <section class="mb-12 page-break">
+    <div class="bg-navy text-white p-4 rounded-t-xl">
+      <h2 class="text-xl font-bold tracking-wide">PART 9: Real-World Locator Patterns</h2>
+    </div>
+    <div class="bg-white p-6 sm:p-8 rounded-b-xl card-border space-y-8">
+
+      <!-- Pattern 51 -->
+      <div>
+        <h3 class="text-lg font-bold text-navy mb-2">51. Login Form</h3>
+        <div class="code-block mb-2">&lt;form class="login-form"&gt;
+  &lt;label for="username"&gt;Username&lt;/label&gt;
+  &lt;input id="username" name="username"&gt;
+  &lt;label for="password"&gt;Password&lt;/label&gt;
+  &lt;input id="password" name="password"&gt;
+  &lt;button type="submit"&gt;Login&lt;/button&gt;
+&lt;/form&gt;</div>
+        <div class="code-block">await page.getByLabel("Username").fill("admin");
+await page.getByLabel("Password").fill("secret");
+await page.getByRole("button", { name: "Login" }).click();</div>
+      </div>
+
+      <!-- Pattern 52 & 53 -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-2">52 & 53. Repeated Transaction Rows & Tables</h3>
+        <div class="code-block mb-2">&lt;tr&gt;
+  &lt;td&gt;CLM-1001&lt;/td&gt;
+  &lt;td&gt;Open&lt;/td&gt;
+  &lt;td&gt;&lt;button&gt;Edit&lt;/button&gt;&lt;/td&gt;
+&lt;/tr&gt;</div>
+        <div class="code-block">await page.locator("tr")
+  .filter({ hasText: "CLM-1001" })
+  .getByRole("button", { name: "Edit" })
+  .click();</div>
+      </div>
+
+      <!-- Pattern 54 -->
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-2">54. Modals and Overlays</h3>
+        <div class="code-block mb-2">&lt;div class="modal"&gt;
+  &lt;h2&gt;Delete Transaction&lt;/h2&gt;
+  &lt;button&gt;Cancel&lt;/button&gt;
+  &lt;button&gt;Delete&lt;/button&gt;
+&lt;/div&gt;</div>
+        <div class="code-block">await page.locator(".modal").getByRole("button", { name: "Delete" }).click();</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== PART 10 & 11 ==================== -->
+  <section class="mb-12 page-break">
+    <div class="bg-navy text-white p-4 rounded-t-xl">
+      <h2 class="text-xl font-bold tracking-wide">PART 10 & 11: Debugging & Common Mistakes</h2>
+    </div>
+    <div class="bg-white p-6 sm:p-8 rounded-b-xl card-border space-y-8">
+
+      <div>
+        <h3 class="text-lg font-bold text-navy mb-3">Locator Failure Diagnostics Table</h3>
+        <table class="custom-table mb-6">
+          <thead>
+            <tr>
+              <th>Symptom</th>
+              <th>Likely Cause</th>
+              <th>Action / Fix</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code class="text-red-600">count() === 0</code></td>
+              <td>Incorrect selector, delayed render, or iframe scope issue</td>
+              <td>Verify HTML inspection, check iframes, or assert visibility</td>
+            </tr>
+            <tr>
+              <td><code class="text-amber-600">count() &gt; 1</code></td>
+              <td>Selector is too broad</td>
+              <td>Scope to container or add <code class="text-blue-custom">filter()</code> condition</td>
+            </tr>
+            <tr>
+              <td><code class="text-red-600">Strictness Violation</code></td>
+              <td>Action expected 1 element but found multiple</td>
+              <td>Narrow locator using business context or accessibility role</td>
+            </tr>
+            <tr>
+              <td>Works locally, fails in CI</td>
+              <td>Environment-specific IDs, dynamic data differences</td>
+              <td>Replace unstable attributes with persistent test IDs or roles</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="border-t pt-6">
+        <h3 class="text-lg font-bold text-navy mb-3">⚠️ Top 4 Anti-Patterns to Eliminate</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+          <div class="callout-amber">
+            <strong class="block mb-1 text-navy">1. Overusing nth() as a Rescue</strong>
+            Do not use <code class="font-bold">nth(7)</code> just because it happened to pass during test writing.
+          </div>
+          <div class="callout-amber">
+            <strong class="block mb-1 text-navy">2. Unscoped getByText()</strong>
+            <code class="font-bold">getByText("Edit")</code> will break when multiple Edit links exist on the page.
+          </div>
+          <div class="callout-amber">
+            <strong class="block mb-1 text-navy">3. Massive DevTools XPaths</strong>
+            Never commit selectors like <code class="font-bold">//html/body/div[2]/div[1]/div[3]/button</code>.
+          </div>
+          <div class="callout-amber">
+            <strong class="block mb-1 text-navy">4. Blind Faith in Self-Healing</strong>
+            Self-healing should not mask underlying locator defects or wrong click targets.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== PART 12 ==================== -->
+  <section class="mb-12 page-break">
+    <div class="bg-navy text-white p-4 rounded-t-xl">
+      <h2 class="text-xl font-bold tracking-wide">PART 12: Locator Design Rules for a Team</h2>
+    </div>
+    <div class="bg-white p-6 sm:p-8 rounded-b-xl card-border">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <div class="p-3 bg-slate-50 border rounded flex items-start gap-2">
+          <span class="font-bold text-navy">Rule 1:</span> Prefer semantic Playwright locators when they express user action clearly.
+        </div>
+        <div class="p-3 bg-slate-50 border rounded flex items-start gap-2">
+          <span class="font-bold text-navy">Rule 2:</span> Use stable test IDs when an intentional test-ID contract exists.
+        </div>
+        <div class="p-3 bg-slate-50 border rounded flex items-start gap-2">
+          <span class="font-bold text-navy">Rule 3:</span> Prefer stable domain attributes over styling-only CSS classes.
+        </div>
+        <div class="p-3 bg-slate-50 border rounded flex items-start gap-2">
+          <span class="font-bold text-navy">Rule 4:</span> Always scope repeated controls to their business container.
+        </div>
+        <div class="p-3 bg-slate-50 border rounded flex items-start gap-2">
+          <span class="font-bold text-navy">Rule 5:</span> Avoid fixed indexes (<code class="text-blue-custom">nth</code>) unless position is the requirement.
+        </div>
+        <div class="p-3 bg-slate-50 border rounded flex items-start gap-2">
+          <span class="font-bold text-navy">Rule 6:</span> Avoid deep DOM structural paths.
+        </div>
+        <div class="p-3 bg-slate-50 border rounded flex items-start gap-2">
+          <span class="font-bold text-navy">Rule 7:</span> Reserve XPath for relationships genuinely benefiting from XPath axes.
+        </div>
+        <div class="p-3 bg-slate-50 border rounded flex items-start gap-2">
+          <span class="font-bold text-navy">Rule 8:</span> Validate uniqueness using <code class="text-blue-custom">count()</code> during development.
+        </div>
+        <div class="p-3 bg-slate-50 border rounded flex items-start gap-2">
+          <span class="font-bold text-navy">Rule 9:</span> Locators must survive unrelated layout and styling changes.
+        </div>
+        <div class="p-3 bg-slate-50 border rounded flex items-start gap-2">
+          <span class="font-bold text-navy">Rule 10:</span> Readability is key: another engineer should instantly understand the target.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== EXERCISES SECTION ==================== -->
+  <section class="mb-12 page-break">
+    <div class="bg-navy text-white p-4 rounded-t-xl">
+      <h2 class="text-xl font-bold tracking-wide">🧪 Practice Exercises: Beginner → Intermediate → Advanced</h2>
+    </div>
+    <div class="bg-white p-6 sm:p-8 rounded-b-xl card-border space-y-8">
+
+      <!-- Beginner Exercises -->
+      <div>
+        <h3 class="text-base font-bold text-blue-custom uppercase tracking-wider mb-4 pb-1 border-b">Beginner Level</h3>
+        
+        <div class="space-y-6">
+          <!-- Ex 1 -->
+          <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+            <div class="font-bold text-navy text-sm mb-1">Exercise 1 — Tag Selector</div>
+            <div class="code-block mb-2">&lt;input type="text"&gt;</div>
+            <p class="text-xs text-slate-700"><strong>Your Task:</strong> Write a locator using only the tag name.</p>
+          </div>
+
+          <!-- Ex 2 -->
+          <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+            <div class="font-bold text-navy text-sm mb-1">Exercise 2 — ID Selector</div>
+            <div class="code-block mb-2">&lt;input id="username"&gt;</div>
+            <p class="text-xs text-slate-700"><strong>Your Task:</strong> Write a locator using the ID.</p>
+          </div>
+
+          <!-- Ex 3-5 -->
+          <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+            <div class="font-bold text-navy text-sm mb-1">Exercise 3–5 — Class & Attributes</div>
+            <div class="code-block mb-2">&lt;input type="text" name="claimNumber" class="form-input" id="claim-number"&gt;</div>
+            <p class="text-xs text-slate-700"><strong>Your Task:</strong> Write selectors using: 1) Class, 2) Name attribute, 3) Tag + type + name combined.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Intermediate Exercises -->
+      <div class="border-t pt-6">
+        <h3 class="text-base font-bold text-teal-custom uppercase tracking-wider mb-4 pb-1 border-b">Intermediate Level</h3>
+        
+        <div class="space-y-6">
+          <!-- Ex 6 -->
+          <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+            <div class="font-bold text-navy text-sm mb-1">Exercise 6 — Dynamic ID</div>
+            <div class="code-block mb-2">&lt;button id="submit-48291"&gt;Submit&lt;/button&gt;</div>
+            <p class="text-xs text-slate-700"><strong>Your Task:</strong> Assume the number changes every run. Build a locator using the stable prefix.</p>
+          </div>
+
+          <!-- Ex 7-10 -->
+          <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+            <div class="font-bold text-navy text-sm mb-1">Exercise 9 & 10 — Repeated Rows & Modals</div>
+            <div class="code-block mb-2">&lt;div class="row"&gt;&lt;span&gt;CLM-1002&lt;/span&gt;&lt;button&gt;Edit&lt;/button&gt;&lt;/div&gt;
+&lt;div class="modal"&gt;&lt;h2&gt;Delete Claim&lt;/h2&gt;&lt;button&gt;Delete&lt;/button&gt;&lt;/div&gt;</div>
+            <p class="text-xs text-slate-700"><strong>Your Task:</strong> 1) Locate Edit for CLM-1002 without using <code class="text-blue-custom">nth()</code>. 2) Locate Delete strictly scoped inside the modal.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Advanced Exercises -->
+      <div class="border-t pt-6">
+        <h3 class="text-base font-bold text-amber-600 uppercase tracking-wider mb-4 pb-1 border-b">Advanced Level</h3>
+        
+        <div class="space-y-6">
+          <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+            <div class="font-bold text-navy text-sm mb-1">Exercise 11 & 12 — Business Hierarchy & XPath Comparison</div>
+            <div class="code-block mb-2">&lt;div class="transaction-row"&gt;
+  &lt;span&gt;Premium Adjustment&lt;/span&gt;
+  &lt;button class="action-btn"&gt;Edit&lt;/button&gt;
+&lt;/div&gt;</div>
+            <p class="text-xs text-slate-700">
+              <strong>Your Task:</strong> Create one Playwright CSS/filter locator and one XPath locator for the Edit button scoped to Premium Adjustment.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== WORKBOOK SCENARIOS ==================== -->
+  <section class="mb-12 page-break">
+    <div class="bg-navy text-white p-4 rounded-t-xl">
+      <h2 class="text-xl font-bold tracking-wide">🏢 Workbook F: Realistic Enterprise QA Scenarios</h2>
+    </div>
+    <div class="bg-white p-6 sm:p-8 rounded-b-xl card-border space-y-6">
+
+      <div class="p-4 bg-neutral-custom rounded-lg border">
+        <h3 class="font-bold text-navy text-sm mb-1">Scenario 1 — Claims List (50+ Rows)</h3>
+        <p class="text-xs text-slate-700 mb-2">
+          A claims page displays 50 claims. Each row has Claim Number, Status, and actions like View, Edit, Add Transaction. Click <strong>Add Transaction</strong> for <strong>CLM-1024</strong>.
+        </p>
+        <div class="code-block mb-2">page.locator(".claim-row")
+  .filter({ hasText: "CLM-1024" })
+  .getByRole("button", { name: "Add Transaction" });</div>
+        <p class="text-xs text-teal-custom font-semibold">Why: Safer than selecting the 24th index row because row order changes based on sorting or filters.</p>
+      </div>
+
+      <div class="p-4 bg-neutral-custom rounded-lg border">
+        <h3 class="font-bold text-navy text-sm mb-1">Scenario 4 — Code Review Challenge</h3>
+        <p class="text-xs text-slate-700 mb-2">
+          A developer submits a pull request containing this locator:
+        </p>
+        <div class="code-block mb-2">//html/body/div[4]/div[2]/div[1]/div[3]/button[1]</div>
+        <p class="text-xs text-amber-custom font-semibold">
+          Senior QA Feedback: Reject. Tightly coupled to absolute DOM structure. Any minor markup update breaks the test suite. Replace with role, label, or container-scoped filter.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== ANSWER KEY ==================== -->
+  <section class="mb-12 page-break">
+    <div class="bg-navy text-white p-4 rounded-t-xl">
+      <h2 class="text-xl font-bold tracking-wide">✅ Complete Answer Key & Explanations</h2>
+    </div>
+    <div class="bg-white p-6 sm:p-8 rounded-b-xl card-border space-y-6">
+
+      <div class="space-y-4">
+        <!-- Ans 1 -->
+        <div class="callout-green">
+          <div class="font-bold text-navy text-sm mb-1">Exercise 1 Answer</div>
+          <div class="code-block mb-2">page.locator("input")</div>
+          <p class="text-xs text-slate-700"><strong>Why:</strong> Standard CSS tag selector. Appropriate only if context contains a single input.</p>
+        </div>
+
+        <!-- Ans 2 -->
+        <div class="callout-green">
+          <div class="font-bold text-navy text-sm mb-1">Exercise 2 Answer</div>
+          <div class="code-block mb-2">page.locator("#username")</div>
+          <p class="text-xs text-slate-700"><strong>Why:</strong> <code class="font-bold">#</code> targets element ID directly.</p>
+        </div>
+
+        <!-- Ans 6 -->
+        <div class="callout-green">
+          <div class="font-bold text-navy text-sm mb-1">Exercise 6 Answer</div>
+          <div class="code-block mb-2">page.locator('[id^="submit-"]')</div>
+          <p class="text-xs text-slate-700"><strong>Why:</strong> <code class="font-bold">^=</code> matches the stable prefix <code class="font-bold">submit-</code> while ignoring dynamic generated trailing numbers.</p>
+        </div>
+
+        <!-- Ans 9 -->
+        <div class="callout-green">
+          <div class="font-bold text-navy text-sm mb-1">Exercise 9 Answer</div>
+          <div class="code-block mb-2">page.locator(".row").filter({ hasText: "CLM-1002" }).getByRole("button", { name: "Edit" })</div>
+          <p class="text-xs text-slate-700"><strong>Why:</strong> First identifies the target container by business key, then targets the semantic button inside.</p>
+        </div>
+
+        <!-- Ans 12 -->
+        <div class="callout-green">
+          <div class="font-bold text-navy text-sm mb-1">Exercise 12 Answer</div>
+          <div class="code-block mb-2">// CSS / Playwright
+page.locator(".transaction-row").filter({ hasText: "Premium Adjustment" }).getByRole("button", { name: "Edit" })
+
+// XPath
+page.locator('//div[contains(@class, "transaction-row")][.//span[text()="Premium Adjustment"]]//button[text()="Edit"]')</div>
+          <p class="text-xs text-slate-700"><strong>Principle:</strong> Prefer the Playwright API version for test readability; use XPath when complex axis navigation is indispensable.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== CHEAT SHEET ==================== -->
+  <section class="mb-12 page-break">
+    <div class="bg-navy text-white p-4 rounded-t-xl">
+      <h2 class="text-xl font-bold tracking-wide">📋 Complete Playwright Locator Cheat Sheet</h2>
+    </div>
+    <div class="bg-white p-6 sm:p-8 rounded-b-xl card-border">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Concept / Strategy</th>
+            <th>JavaScript / TypeScript Playwright Syntax</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>getByRole</td>
+            <td><code class="text-blue-custom">page.getByRole("button", { name: "Submit" })</code></td>
+          </tr>
+          <tr>
+            <td>getByText</td>
+            <td><code class="text-blue-custom">page.getByText("Submit")</code></td>
+          </tr>
+          <tr>
+            <td>getByLabel</td>
+            <td><code class="text-blue-custom">page.getByLabel("Username")</code></td>
+          </tr>
+          <tr>
+            <td>getByPlaceholder</td>
+            <td><code class="text-blue-custom">page.getByPlaceholder("Enter username")</code></td>
+          </tr>
+          <tr>
+            <td>getByAltText</td>
+            <td><code class="text-blue-custom">page.getByAltText("Logo")</code></td>
+          </tr>
+          <tr>
+            <td>getByTitle</td>
+            <td><code class="text-blue-custom">page.getByTitle("Close")</code></td>
+          </tr>
+          <tr>
+            <td>getByTestId</td>
+            <td><code class="text-blue-custom">page.getByTestId("submit-btn")</code></td>
+          </tr>
+          <tr>
+            <td>CSS Tag / ID / Class</td>
+            <td><code class="text-blue-custom">page.locator("input")</code> | <code class="text-blue-custom">page.locator("#user")</code> | <code class="text-blue-custom">page.locator(".btn")</code></td>
+          </tr>
+          <tr>
+            <td>Multiple Classes</td>
+            <td><code class="text-blue-custom">page.locator(".btn.primary")</code></td>
+          </tr>
+          <tr>
+            <td>Attribute Match</td>
+            <td><code class="text-blue-custom">page.locator('[name="username"]')</code></td>
+          </tr>
+          <tr>
+            <td>Attribute Operators</td>
+            <td><code class="text-blue-custom">[id^="pref-"]</code> | <code class="text-blue-custom">[id$="-suff"]</code> | <code class="text-blue-custom">[id*="sub"]</code></td>
+          </tr>
+          <tr>
+            <td>Descendant vs Child</td>
+            <td><code class="text-blue-custom">page.locator(".form input")</code> vs <code class="text-blue-custom">page.locator(".form &gt; input")</code></td>
+          </tr>
+          <tr>
+            <td>:has-text() & :has()</td>
+            <td><code class="text-blue-custom">page.locator('button:has-text("Save")')</code> | <code class="text-blue-custom">page.locator('.row:has(button)')</code></td>
+          </tr>
+          <tr>
+            <td>filter() chaining</td>
+            <td><code class="text-blue-custom">page.locator(".row").filter({ hasText: "David" }).getByRole("button")</code></td>
+          </tr>
+          <tr>
+            <td>Positional helpers</td>
+            <td><code class="text-blue-custom">.first()</code> | <code class="text-blue-custom">.last()</code> | <code class="text-blue-custom">.nth(1)</code></td>
+          </tr>
+          <tr>
+            <td>XPath Attributes / Text</td>
+            <td><code class="text-blue-custom">page.locator('//input[@name="username"]')</code> | <code class="text-blue-custom">page.locator('//button[text()="Submit"]')</code></td>
+          </tr>
+          <tr>
+            <td>XPath Axes</td>
+            <td><code class="text-blue-custom">page.locator('//input/ancestor::form[1]')</code> | <code class="text-blue-custom">page.locator('//span/following::button[1]')</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ==================== FINAL MENTAL MODEL ==================== -->
+  <section class="mb-12 page-break">
+    <div class="bg-navy text-white rounded-xl p-8 card-border shadow-lg text-center sm:text-left">
+      <h2 class="text-2xl font-bold mb-6 text-teal-300 border-b border-slate-700 pb-2">
+        🧠 Final Mental Model: The 7 Diagnostic Questions
+      </h2>
+
+      <div class="space-y-3 text-xs sm:text-sm text-slate-200 mb-8">
+        <div class="flex items-center gap-3 bg-slate-800 p-3 rounded border border-slate-700">
+          <span class="bg-teal-custom text-white font-bold w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
+          <span><strong>WHAT ELEMENT IS IT?</strong> (button, input, row, link, table cell)</span>
+        </div>
+        <div class="flex items-center gap-3 bg-slate-800 p-3 rounded border border-slate-700">
+          <span class="bg-teal-custom text-white font-bold w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span>
+          <span><strong>WHAT MAKES IT UNIQUE?</strong> (role, text, label, ID, test-id, attribute)</span>
+        </div>
+        <div class="flex items-center gap-3 bg-slate-800 p-3 rounded border border-slate-700">
+          <span class="bg-teal-custom text-white font-bold w-6 h-6 rounded-full flex items-center justify-center text-xs">3</span>
+          <span><strong>IS THAT PROPERTY STABLE?</strong> (persistent vs build-generated / localized)</span>
+        </div>
+        <div class="flex items-center gap-3 bg-slate-800 p-3 rounded border border-slate-700">
+          <span class="bg-teal-custom text-white font-bold w-6 h-6 rounded-full flex items-center justify-center text-xs">4</span>
+          <span><strong>IS THERE A BUSINESS CONTAINER?</strong> (row, card, modal, panel)</span>
+        </div>
+        <div class="flex items-center gap-3 bg-slate-800 p-3 rounded border border-slate-700">
+          <span class="bg-teal-custom text-white font-bold w-6 h-6 rounded-full flex items-center justify-center text-xs">5</span>
+          <span><strong>CAN I SCOPE THE TARGET?</strong> (chaining, filter, :has)</span>
+        </div>
+        <div class="flex items-center gap-3 bg-slate-800 p-3 rounded border border-slate-700">
+          <span class="bg-teal-custom text-white font-bold w-6 h-6 rounded-full flex items-center justify-center text-xs">6</span>
+          <span><strong>IS THE LOCATOR UNIQUE?</strong> (<code class="text-teal-300">count() === 1</code>)</span>
+        </div>
+        <div class="flex items-center gap-3 bg-slate-800 p-3 rounded border border-slate-700">
+          <span class="bg-teal-custom text-white font-bold w-6 h-6 rounded-full flex items-center justify-center text-xs">7</span>
+          <span><strong>WILL IT SURVIVE UNRELATED UI CHANGES?</strong> (resilient architecture)</span>
+        </div>
+      </div>
+
+      <div class="bg-teal-900/50 border border-teal-500/40 p-4 rounded-lg text-center">
+        <p class="text-base font-bold text-white mb-1">
+          "A selector that passes the test is not automatically a good selector."
+        </p>
+        <p class="text-xs text-teal-200">
+          Locator engineering quality is part of test framework quality.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== TRAINER NOTES & RUBRIC ==================== -->
+  <section class="mb-12 avoid-break">
+    <div class="callout-teal">
+      <h2 class="text-lg font-bold text-navy mb-3 flex items-center gap-2">
+        <span>👨‍🏫</span> Senior SDET / Trainer Guidance
+      </h2>
+      <p class="text-xs text-slate-700 mb-4">
+        When using this guide to train junior/intermediate engineers, do not allow them to generate locators using Playwright Codegen initially. Force them to articulate their container-and-action strategy aloud before writing code.
+      </p>
+
+      <h3 class="text-xs font-bold text-navy uppercase tracking-wider mb-2">Quick Assessment Rubric</h3>
+      <table class="custom-table text-xs">
+        <thead>
+          <tr>
+            <th>Level</th>
+            <th>Competency Indicator</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Beginner</strong></td>
+            <td>Uses <code class="text-blue-custom">getByRole</code>, <code class="text-blue-custom">getByText</code>, <code class="text-blue-custom">getByLabel</code>, and basic <code class="text-blue-custom">#</code>, <code class="text-blue-custom">.</code>, attribute selectors.</td>
+          </tr>
+          <tr>
+            <td><strong>Developing</strong></td>
+            <td>Combines CSS attributes, scopes elements, and articulates parent/child relationships.</td>
+          </tr>
+          <tr>
+            <td><strong>Intermediate</strong></td>
+            <td>Uses <code class="text-blue-custom">filter()</code>, <code class="text-blue-custom">:has-text()</code>, <code class="text-blue-custom">:has()</code>, chaining, and avoids unnecessary <code class="text-blue-custom">nth()</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>Advanced</strong></td>
+            <td>Constructs resilient hierarchical locators and uses XPath selectively for complex DOM axes.</td>
+          </tr>
+          <tr>
+            <td><strong>Framework-Ready</strong></td>
+            <td>Evaluates uniqueness, stability, maintainability, business intent, and future UI resilience.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="mt-12 pt-6 border-t border-slate-300 text-center text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center gap-2">
+    <div>
+      Playwright Locators Training Workbook • Senior QA Engineering Edition
+    </div>
+    <div class="font-semibold text-navy">
+      Happy Automating! — Qaseem Ali
+    </div>
+  </footer>
+
+</body>
+</html>
